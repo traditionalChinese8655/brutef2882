@@ -1,0 +1,216 @@
+.data
+a1:     .asciz "1"
+a2:     .asciz "2"
+a3:     .asciz "3"
+a4:     .asciz "4"
+a5:     .asciz "5"
+a6:     .asciz "6"
+a7:     .asciz "7"
+a8:     .asciz "8"
+a9:     .asciz "9"
+prompt1: .asciz "where to place what?\nq to quit\n> "
+prompt2: .asciz "what to place?\n x / o\n> "
+newline: .asciz "\n"
+dash:   .asciz "-----"
+oxo:    .asciz "OXO"
+bar:    .asciz "|"
+
+.text
+.globl main
+
+# Function: board
+board:
+    # Print "OXO"
+    la a0, oxo
+    li a7, 4
+    ecall
+    la a0, newline
+    ecall
+
+    # Print first row
+    la a0, a1
+    ecall
+    la a0, bar
+    ecall
+    la a0, a2
+    ecall
+    la a0, bar
+    ecall
+    la a0, a3
+    ecall
+    la a0, newline
+    ecall
+
+    # Print "-----"
+    la a0, dash
+    ecall
+    la a0, newline
+    ecall
+
+    # Print second row
+    la a0, a4
+    ecall
+    la a0, bar
+    ecall
+    la a0, a5
+    ecall
+    la a0, bar
+    ecall
+    la a0, a6
+    ecall
+    la a0, newline
+    ecall
+
+    # Print "-----"
+    la a0, dash
+    ecall
+    la a0, newline
+    ecall
+
+    # Print third row
+    la a0, a7
+    ecall
+    la a0, bar
+    ecall
+    la a0, a8
+    ecall
+    la a0, bar
+    ecall
+    la a0, a9
+    ecall
+    la a0, newline
+    ecall
+
+    ret
+
+# Function: choice
+choice:
+    # Print prompt1
+    la a0, prompt1
+    li a7, 4
+    ecall
+
+    # Read input (num)
+    li a7, 5
+    ecall
+    mv t0, a0
+
+    # Check for 'q'
+    li t1, 'q'
+    beq t0, t1, exit
+
+    # Check for 1-9
+    li t1, 1
+    beq t0, t1, set1
+    li t1, 2
+    beq t0, t1, set2
+    li t1, 3
+    beq t0, t1, set3
+    li t1, 4
+    beq t0, t1, set4
+    li t1, 5
+    beq t0, t1, set5
+    li t1, 6
+    beq t0, t1, set6
+    li t1, 7
+    beq t0, t1, set7
+    li t1, 8
+    beq t0, t1, set8
+    li t1, 9
+    beq t0, t1, set9
+    j choice
+
+set1:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a1
+    li a1, 2
+    ecall
+    j choice_end
+set2:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a2
+    li a1, 2
+    ecall
+    j choice_end
+set3:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a3
+    li a1, 2
+    ecall
+    j choice_end
+set4:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a4
+    li a1, 2
+    ecall
+    j choice_end
+set5:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a5
+    li a1, 2
+    ecall
+    j choice_end
+set6:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a6
+    li a1, 2
+    ecall
+    j choice_end
+set7:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a7
+    li a1, 2
+    ecall
+    j choice_end
+set8:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a8
+    li a1, 2
+    ecall
+    j choice_end
+set9:
+    la a0, prompt2
+    li a7, 4
+    ecall
+    li a7, 8
+    la a0, a9
+    li a1, 2
+    ecall
+    j choice_end
+
+choice_end:
+    ret
+
+exit:
+    li a7, 10
+    ecall
+
+main:
+    loop:
+        jal board
+        jal choice
+        j loop
