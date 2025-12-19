@@ -1,0 +1,29 @@
+from pynput import mouse
+import time
+import random
+
+# Controller to perform clicks, Listener to detect them
+mouse_controller = mouse.Controller()
+is_script_clicking = False
+
+def on_click(x, y, button, pressed):
+    global is_script_clicking
+    
+    # Detect only the Left Mouse Button press
+    if button == mouse.Button.left and pressed:
+        # Prevent the script from triggering its own listener
+        if not is_script_clicking:
+            # Generate a random delay between 10ms (0.01s) and 20ms (0.02s)
+            delay = random.uniform(0.01, 0.02)
+            
+            print(f"Click detected. Waiting {delay*1000:.1f}ms before auto-clicking...")
+            
+            is_script_clicking = True
+            time.sleep(delay)  # Wait for the random duration
+            mouse_controller.click(mouse.Button.left, 1)
+            is_script_clicking = False
+
+# Start the global listener
+print("Listener active. Press Ctrl+C in terminal to stop.")
+with mouse.Listener(on_click=on_click) as listener:
+    listener.join()
