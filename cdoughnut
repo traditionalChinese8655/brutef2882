@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#ifdef _WIN32
+#define CLEAR "cls"
+#else
+#define CLEAR "clear"
+#endif
+
+void clear_screen() {
+    system(CLEAR);
+}
+
+int main() {
+    double A = 0, B = 0;
+    char output[1760];
+    double zbuffer[1760];
+    const char* chars = ".,-~:;=!*#$@";
+
+    while (1) {
+        memset(output, ' ', 1760);
+        memset(zbuffer, 0, sizeof(zbuffer));
+
+        for (int j = 0; j < 628; j += 7) {  // theta
+            for (int i = 0; i < 628; i += 2) {  // phi
+                double c = sin(i * 0.01);
+                double d = cos(j * 0.01);
+                double e = sin(A);
+                double f = sin(j * 0.01);
+                double g = cos(A);
+                double h = d + 2;
+                double D = 1 / (c * h * e + f * g + 5);
+                double l = cos(i * 0.01);
+                double m = cos(B);
+                double n = sin(B);
+                double t = c * h * g - f * e;
+
+                int x = (int)(40 + 30 * D * (l * h * m - t * n));
+                int y = (int)(12 + 15 * D * (l * h * n + t * m));
+                int o = x + 80 * y;
+
+                int N = (int)(8 * ((f * e - c * d * g) * m - c * d * e - f * g - l * d * n));
+
+                if (22 > y && y > 0 && 80 > x && x > 0 && D > zbuffer[o]) {
+                    zbuffer[o] = D;
+                    int char_idx = (N >= 0 && N < (int)strlen(chars)) ? N : 0;
+                    output[o] = chars[char_idx];
+                }
+            }
+        }
+
+        clear_screen();
+        for (int i = 0; i < 1760; i += 80) {
+            fwrite(&output[i], 1, 80, stdout);
+            putchar('\n');
+        }
+
+        A += 0.04;
+        B += 0.02;
+        usleep(30000);
+    }
+
+    return 0;
+}
